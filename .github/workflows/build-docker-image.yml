@@ -1,14 +1,14 @@
 name: Build and Push Docker Image
 
-于: 
+on: 
   push:
-    分支: [ main ]
+    branches: [ main ]
     paths:
       - 'Dockerfile'
       - 'index.js'
       - 'package.json'
   pull_request:
-    分支: [ main ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -28,12 +28,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Convert owner to lowercase
         id: vars
         run: echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -43,8 +42,8 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
-          标签: |
-           ghcr.io/${{ steps.vars.outputs.owner }}/2026nodejs:2026
+          tags: |
+            ghcr.io/${{ steps.vars.outputs.owner }}/2026nodejs:2026
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.description=HTTP Server
